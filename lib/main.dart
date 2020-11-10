@@ -3,6 +3,7 @@ import 'package:shopping_list_app/ui/items_screen.dart';
 import './utils/dbhelper.dart';
 import './models/list_items.dart';
 import './models/shopping_list.dart';
+import 'ui/shopping_list_dialog.dart';
 
 void main() => runApp(MyApp());
 
@@ -36,19 +37,22 @@ class _ShopingListState extends State<ShopingList> {
     });
   }
 
+  ShoppingListDialog dialog;
   @override
   void initState() {
-    // TODO: implement initState
-    showData();
+    dialog = ShoppingListDialog();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    ShoppingListDialog dialog = ShoppingListDialog();
     showData();
-    return Container(
-      color: Colors.white,
-      child: ListView.builder(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Shopping List"),
+      ),
+      body: ListView.builder(
           itemCount: (shoppingList != null) ? shoppingList.length : 0,
           itemBuilder: (BuildContext context, int index) {
             return Card(
@@ -68,10 +72,26 @@ class _ShopingListState extends State<ShopingList> {
                   },
                   trailing: IconButton(
                     icon: Icon(Icons.edit),
-                    onPressed: () {},
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) => dialog.buildDialog(
+                              context, shoppingList[index], false));
+                    },
                   )),
             );
           }),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) =>
+                dialog.buildDialog(context, ShoppingList(0, '', 0), true),
+          );
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.pink,
+      ),
     );
   }
 }
