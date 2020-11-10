@@ -1,5 +1,7 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import '../models/list_items.dart';
+import '../models/shopping_list.dart';
 
 class DbHelper {
   final int dbVersion = 1;
@@ -28,5 +30,23 @@ class DbHelper {
       }, version: dbVersion);
     }
     return db;
+  }
+
+  Future<int> insertList(ShoppingList list) async {
+    int id = await this.db.insert(
+          'lists',
+          list.toMap(),
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+    return id;
+  }
+
+  Future<int> insertItem(ListItem item) async {
+    int id = await db.insert(
+      'items',
+      item.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    return id;
   }
 }
