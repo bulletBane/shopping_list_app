@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shopping_list_app/ui/items_screen.dart';
 import './utils/dbhelper.dart';
 import './models/list_items.dart';
 import './models/shopping_list.dart';
@@ -25,22 +26,53 @@ class ShopingList extends StatefulWidget {
 class _ShopingListState extends State<ShopingList> {
   DbHelper helper = DbHelper();
 
+  List<ShoppingList> shoppingList;
+
   Future showData() async {
     await helper.openDb();
+    shoppingList = await helper.getLists();
+    setState(() {
+      shoppingList = shoppingList;
+    });
+  }
 
-    ShoppingList list = ShoppingList(0, 'Bakery', 2);
-    int listId = await helper.insertList(list);
-
-    ListItem item = ListItem(0, listId, 'Bread', 'note', '1 kg');
-    int itemId = await helper.insertItem(item);
-
-    print('List Id: ' + listId.toString());
-    print('Item Id: ' + itemId.toString());
+  @override
+  void initState() {
+    // TODO: implement initState
+    showData();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     showData();
-    return Container();
+    return Container(
+      color: Colors.white,
+      child: ListView.builder(
+          itemCount: (shoppingList != null) ? shoppingList.length : 0,
+          itemBuilder: (BuildContext context, int index) {
+            return Card(
+              color: Colors.white,
+              elevation: 2.0,
+              child: ListTile(
+                  title: Text(shoppingList[index].name),
+                  leading: CircleAvatar(
+                    child: Text(shoppingList[index].priority.toString()),
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                ItemsScreen(shoppingList[index])));
+                  },
+                  trailing: IconButton(
+                    icon: Icon(Icons.edit),
+                    onPressed: () {},
+                  )),
+            );
+          }),
+    );
   }
 }
+//
