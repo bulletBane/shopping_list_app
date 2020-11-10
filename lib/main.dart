@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_swipe_action_cell/core/cell.dart';
 import 'package:shopping_list_app/ui/items_screen.dart';
 import './utils/dbhelper.dart';
 import './models/list_items.dart';
@@ -55,30 +56,60 @@ class _ShopingListState extends State<ShopingList> {
       body: ListView.builder(
           itemCount: (shoppingList != null) ? shoppingList.length : 0,
           itemBuilder: (BuildContext context, int index) {
-            return Card(
-              color: Colors.white,
-              elevation: 2.0,
-              child: ListTile(
-                  title: Text(shoppingList[index].name),
-                  leading: CircleAvatar(
-                    child: Text(shoppingList[index].priority.toString()),
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                ItemsScreen(shoppingList[index])));
-                  },
-                  trailing: IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) => dialog.buildDialog(
-                              context, shoppingList[index], false));
-                    },
-                  )),
+            return Dismissible(
+              key: Key(shoppingList[index].name),
+              onDismissed: (direction) {
+                String strName = shoppingList[index].name;
+                helper.deleteList(shoppingList[index]);
+                setState(() {
+                  shoppingList.removeAt(index);
+                });
+                Scaffold.of(context)
+                    .showSnackBar(SnackBar(content: Text("$strName deleted")));
+              },
+              child: SwipeActionCell(
+                key: ObjectKey(shoppingList[index].name),
+                trailingActions: <SwipeAction>[
+                  SwipeAction(
+                      title: "delete",
+                      onTap: (CompletionHandler handler) async {
+                        String strName = shoppingList[index].name;
+                        helper.deleteList(shoppingList[index]);
+                        setState(() {
+                          shoppingList.removeAt(index);
+                        });
+                        Scaffold.of(context).showSnackBar(
+                            SnackBar(content: Text("$strName deleted")));
+                      },
+                      color: Colors.red),
+                ],
+                child: Card(
+                  color: Colors.white,
+                  elevation: 2.0,
+                  child: ListTile(
+                      title: Text(shoppingList[index].name),
+                      leading: CircleAvatar(
+                        child: Text(shoppingList[index].priority.toString()),
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    ItemsScreen(shoppingList[index])));
+                      },
+                      trailing: IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) =>
+                                  dialog.buildDialog(
+                                      context, shoppingList[index], false));
+                        },
+                      )),
+                ),
+              ),
             );
           }),
       floatingActionButton: FloatingActionButton(
