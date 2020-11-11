@@ -56,6 +56,12 @@ class DbHelper {
     return id;
   }
 
+  Future<int> deleteItem(ListItem item) async {
+    int result =
+        await db.delete("items", where: "id = ?", whereArgs: [item.id]);
+    return result;
+  }
+
   Future<int> deleteList(ShoppingList list) async {
     int result =
         await db.delete("items", where: "idList = ?", whereArgs: [list.id]);
