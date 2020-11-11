@@ -2,35 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shopping_list_app/models/list_items.dart';
 import 'package:shopping_list_app/utils/dbhelper.dart';
 
-// class ItemsDialog extends StatefulWidget {
-//   ItemsDialog({Key key}) : super(key: key);
-
-//   @override
-//   _ItemsDialogState createState() => _ItemsDialogState();
-// }
-
-// class _ItemsDialogState extends State<ItemsDialog> {
-//   TextEditingController txtName;
-//   TextEditingController txtPriority;
-//   DbHelper helper = DbHelper();
-//   @override
-//   void initState() {
-//     // TODO: implement initState
-//     TextEditingController txtName = TextEditingController();
-//     TextEditingController txtPriority = TextEditingController();
-//     super.initState();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return AlertDialog(
-//       content: Column(
-//         children: [TextField(), TextField()],
-//       ),
-//     );
-//   }
-// }
-
 class ItemsDialog {
   final txtName = TextEditingController();
   final txtQuantity = TextEditingController();
